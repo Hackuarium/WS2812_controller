@@ -10187,10 +10187,10 @@ Mfr no: 1776244-3 &lt;br&gt;
 <plain>
 <text x="205.74" y="99.06" size="5.08" layer="91">ATMega32u4</text>
 <text x="307.34" y="167.64" size="6.4516" layer="91" ratio="5">IR receiver</text>
-<text x="307.34" y="101.6" size="6.4516" layer="91" ratio="5">IR receiver</text>
-<text x="307.34" y="35.56" size="6.4516" layer="91" ratio="5">IR receiver</text>
-<text x="132.08" y="175.26" size="6.4516" layer="91" ratio="5">IR receiver</text>
-<text x="129.54" y="101.6" size="6.4516" layer="91" ratio="5">IR receiver</text>
+<text x="307.34" y="101.6" size="6.4516" layer="91" ratio="5">3 leds to play</text>
+<text x="307.34" y="35.56" size="6.4516" layer="91" ratio="5">I/O</text>
+<text x="132.08" y="175.26" size="6.4516" layer="91" ratio="5">Power supply</text>
+<text x="129.54" y="101.6" size="6.4516" layer="91" ratio="5">Microcontroller</text>
 </plain>
 <instances>
 <instance part="C11" gate="G$1" x="157.48" y="48.26" rot="R270"/>
