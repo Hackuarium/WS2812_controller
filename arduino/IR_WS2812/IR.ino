@@ -63,7 +63,6 @@ void irInterrupt() {
 
 byte getIntensity() { // value from 0 to 7 should be converted to 31 to 255
   int intensity=(getParameter(PARAM_INTENSITY)+1)*32-1;
-  Serial.println(intensity);
   return (getParameter(PARAM_INTENSITY)+1)*32-1;
 }
 
@@ -141,7 +140,7 @@ void setupIR() {
   pinMode(1, INPUT);
   digitalWrite(1, HIGH);
   pinMode(MONITORING, OUTPUT);
-  attachInterrupt(3, irInterrupt, CHANGE);
+  attachInterrupt(2, irInterrupt, CHANGE);
 }
 
 
