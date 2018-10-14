@@ -1,6 +1,5 @@
 #include <FastLED.h>
 
-#define NUM_LEDS    400
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
 CRGB leds[NUM_LEDS];
@@ -49,9 +48,9 @@ void loopFastLED()
 {
   FastLED.setBrightness(  getIntensity() );
 
-  if (getParameter(PARAM_POWER)==0) {
-    currentPalette=blackPalette;
-  } 
+  if (getParameter(PARAM_POWER) == 0) {
+    currentPalette = blackPalette;
+  }
   else {
     getPalette();
   }
@@ -64,7 +63,7 @@ void loopFastLED()
 
 void FillLEDsFromPaletteColors( uint8_t colorIndex)
 {
-  for( int i = 0; i < NUM_LEDS; i++) {
+  for ( int i = 0; i < NUM_LEDS; i++) {
     leds[i] = ColorFromPalette( currentPalette, colorIndex, 255, currentBlending);
     colorIndex += getParameter(PARAM_CHANGE);
   }
@@ -74,36 +73,36 @@ void FillLEDsFromPaletteColors( uint8_t colorIndex)
 // OceanColors_p, CloudColors_p, LavaColors_p, ForestColors_p, and PartyColors_p.
 void getPalette() {
   switch (getParameter(PARAM_COLOR_MODEL)) {
-  case 0:
-    currentPalette=RainbowColors_p;
-    break;
-  case 1:
-    currentPalette=RainbowStripeColors_p;
-    break;
-  case 2:
-    currentPalette=OceanColors_p;
-    break;
-  case 3:
-    currentPalette=CloudColors_p;
-    break;
-  case 4:
-    currentPalette=LavaColors_p;
-    break;
-  case 5:
-    currentPalette=ForestColors_p;
-    break;
-  case 6:
-    currentPalette=PartyColors_p;
-    break;
-     case 7:
-    currentPalette=blueRedPalette;
-    break;
-     case 8:
-    currentPalette=blueGreenRedPalette;
-    break;
-         case 9:
-    currentPalette=blueDarkVioletPalette;
-    break;
+    case 0:
+      currentPalette = RainbowColors_p;
+      break;
+    case 1:
+      currentPalette = RainbowStripeColors_p;
+      break;
+    case 2:
+      currentPalette = OceanColors_p;
+      break;
+    case 3:
+      currentPalette = CloudColors_p;
+      break;
+    case 4:
+      currentPalette = LavaColors_p;
+      break;
+    case 5:
+      currentPalette = ForestColors_p;
+      break;
+    case 6:
+      currentPalette = PartyColors_p;
+      break;
+    case 7:
+      currentPalette = blueRedPalette;
+      break;
+    case 8:
+      currentPalette = blueGreenRedPalette;
+      break;
+    case 9:
+      currentPalette = blueDarkVioletPalette;
+      break;
   }
 }
 
@@ -120,51 +119,51 @@ void ChangePalettePeriodically()
   uint8_t secondHand = (millis() / 1000) % 60;
   static uint8_t lastSecond = 99;
 
-  if( lastSecond != secondHand) {
+  if ( lastSecond != secondHand) {
     lastSecond = secondHand;
-    if( secondHand ==  0)  { 
-      currentPalette = RainbowColors_p;         
-      currentBlending = LINEARBLEND; 
+    if ( secondHand ==  0)  {
+      currentPalette = RainbowColors_p;
+      currentBlending = LINEARBLEND;
     }
-    if( secondHand == 10)  { 
-      currentPalette = RainbowStripeColors_p;   
-      currentBlending = NOBLEND;  
+    if ( secondHand == 10)  {
+      currentPalette = RainbowStripeColors_p;
+      currentBlending = NOBLEND;
     }
-    if( secondHand == 15)  { 
-      currentPalette = RainbowStripeColors_p;   
-      currentBlending = LINEARBLEND; 
+    if ( secondHand == 15)  {
+      currentPalette = RainbowStripeColors_p;
+      currentBlending = LINEARBLEND;
     }
-    if( secondHand == 20)  { 
-      SetupPurpleAndGreenPalette();             
-      currentBlending = LINEARBLEND; 
+    if ( secondHand == 20)  {
+      SetupPurpleAndGreenPalette();
+      currentBlending = LINEARBLEND;
     }
-    if( secondHand == 25)  { 
-      SetupTotallyRandomPalette();              
-      currentBlending = LINEARBLEND; 
+    if ( secondHand == 25)  {
+      SetupTotallyRandomPalette();
+      currentBlending = LINEARBLEND;
     }
-    if( secondHand == 30)  { 
-      SetupBlackAndWhiteStripedPalette();       
-      currentBlending = NOBLEND; 
+    if ( secondHand == 30)  {
+      SetupBlackAndWhiteStripedPalette();
+      currentBlending = NOBLEND;
     }
-    if( secondHand == 35)  { 
-      SetupBlackAndWhiteStripedPalette();       
-      currentBlending = LINEARBLEND; 
+    if ( secondHand == 35)  {
+      SetupBlackAndWhiteStripedPalette();
+      currentBlending = LINEARBLEND;
     }
-    if( secondHand == 40)  { 
-      currentPalette = CloudColors_p;           
-      currentBlending = LINEARBLEND; 
+    if ( secondHand == 40)  {
+      currentPalette = CloudColors_p;
+      currentBlending = LINEARBLEND;
     }
-    if( secondHand == 45)  { 
-      currentPalette = PartyColors_p;           
-      currentBlending = LINEARBLEND; 
+    if ( secondHand == 45)  {
+      currentPalette = PartyColors_p;
+      currentBlending = LINEARBLEND;
     }
-    if( secondHand == 50)  { 
-      currentPalette = myRedWhiteBluePalette_p; 
-      currentBlending = NOBLEND;  
+    if ( secondHand == 50)  {
+      currentPalette = myRedWhiteBluePalette_p;
+      currentBlending = NOBLEND;
     }
-    if( secondHand == 55)  { 
-      currentPalette = myRedWhiteBluePalette_p; 
-      currentBlending = LINEARBLEND; 
+    if ( secondHand == 55)  {
+      currentPalette = myRedWhiteBluePalette_p;
+      currentBlending = LINEARBLEND;
     }
   }
 }
@@ -172,7 +171,7 @@ void ChangePalettePeriodically()
 // This function fills the palette with totally random colors.
 void SetupTotallyRandomPalette()
 {
-  for( int i = 0; i < 16; i++) {
+  for ( int i = 0; i < 16; i++) {
     currentPalette[i] = CHSV( random8(), 255, random8());
   }
 }
@@ -181,8 +180,7 @@ void SetupTotallyRandomPalette()
 // using code.  Since the palette is effectively an array of
 // sixteen CRGB colors, the various fill_* functions can be used
 // to set them up.
-void SetupBlackAndWhiteStripedPalette()
-{
+void SetupBlackAndWhiteStripedPalette() {
   // 'black out' all 16 palette entries...
   fill_solid( currentPalette, 16, CRGB::Black);
   // and set every fourth one to white.
@@ -201,10 +199,10 @@ void SetupPurpleAndGreenPalette()
   CRGB black  = CRGB::Black;
 
   currentPalette = CRGBPalette16(
-  green,  green,  black,  black,
-  purple, purple, black,  black,
-  green,  green,  black,  black,
-  purple, purple, black,  black );
+                     green,  green,  black,  black,
+                     purple, purple, black,  black,
+                     green,  green,  black,  black,
+                     purple, purple, black,  black );
 }
 
 
