@@ -10,10 +10,10 @@ byte monitValue = LOW;
 #define BUTTON_RIGHT       2
 #define BUTTON_AUTO        52
 
+#define BUTTON44_DIMMER   20813653
+#define BUTTON44_BRIGHTER 20736341
 #define BUTTON44_ON       19562325
 #define BUTTON44_OFF      19628373
-#define BUTTON44_QUICK    22013269
-#define BUTTON44_SLOW     21503317
 #define BUTTON44_21       20606805
 #define BUTTON44_22       20681045
 #define BUTTON44_23       19691861
@@ -26,7 +26,8 @@ byte monitValue = LOW;
 #define BUTTON44_42       20210005
 #define BUTTON44_43       19106133
 #define BUTTON44_44       19035989
-
+#define BUTTON44_QUICK    22013269
+#define BUTTON44_SLOW     21503317
 
 long unsigned timeLast = 0;
 boolean highBit = true;
@@ -34,6 +35,7 @@ boolean raising = true;
 
 long unsigned irCode = 0;
 long unsigned newIrCode = 0;
+long unsigned prevIrCode = 0;
 byte currentBit = 0;
 
 void irInterrupt() {
@@ -47,8 +49,7 @@ void irInterrupt() {
     newIrCode = 0;
     highBit = true;
     raising = true;
-  }
-  else {
+  } else {
     if (timeCurrent - timeLast < 1200) {
       highBit = !highBit;
     }
@@ -62,9 +63,14 @@ void irInterrupt() {
       }
       currentBit++;
       if (currentBit == REMOTE_BITS) {
-        if (irCode != newIrCode) {
-          irCode = newIrCode;
-          eventIR(irCode);
+        if (prevIrCode != newIrCode) { // need to receive twice the same code
+          prevIrCode = newIrCode;
+        }
+        {
+          if (irCode != newIrCode) {
+            irCode = newIrCode;
+            eventIR(irCode);
+          }
         }
       }
     }
@@ -95,8 +101,6 @@ void eventIR(unsigned long irCode) {
     case  BUTTON44_OFF:
       setAndSaveParameter(PARAM_POWER, 0);
       break;
-
-
     case BUTTON_POWER:
       if (getParameter(PARAM_POWER) == 0) {
         setAndSaveParameter(PARAM_POWER, 1);
@@ -104,17 +108,45 @@ void eventIR(unsigned long irCode) {
         setAndSaveParameter(PARAM_POWER, 0);
       }
       break;
+    case BUTTON44_BRIGHTER:
     case BUTTON_UP:
       if (getParameter(PARAM_INTENSITY) < 7) {
         incrementAndSaveParameter(PARAM_INTENSITY);
       }
       break;
+    case BUTTON44_DIMMER:
     case BUTTON_DOWN:
       if (getParameter(PARAM_INTENSITY) > 0) {
         decrementAndSaveParameter(PARAM_INTENSITY);
       }
       break;
-    case BUTTON_SOUND:
+
+
+    case BUTTON44_31 :
+      setAndSaveParameter(PARAM_COLOR_MODEL, 0);
+      break;
+    case BUTTON44_32:
+      setAndSaveParameter(PARAM_COLOR_MODEL, 1);
+      break;
+    case BUTTON44_33:
+      setAndSaveParameter(PARAM_COLOR_MODEL, 2);
+      break;
+    case BUTTON44_34:
+      setAndSaveParameter(PARAM_COLOR_MODEL, 3);
+      break;
+    case BUTTON44_41:
+      setAndSaveParameter(PARAM_COLOR_MODEL, 4);
+      break;
+    case BUTTON44_42:
+      setAndSaveParameter(PARAM_COLOR_MODEL, 5);
+      break;
+    case BUTTON44_43:
+      setAndSaveParameter(PARAM_COLOR_MODEL, 6);
+      break;
+    case BUTTON44_44:
+      setAndSaveParameter(PARAM_COLOR_MODEL, 7);
+      break;
+    case BUTTON_SOUND: // color model
       if (getParameter(PARAM_COLOR_MODEL) > 8) {
         setAndSaveParameter(PARAM_COLOR_MODEL, 0);
       }
@@ -134,7 +166,8 @@ void eventIR(unsigned long irCode) {
         decrementAndSaveParameter(PARAM_SPEED);
       }
       break;
-    case BUTTON_AUTO:
+    case BUTTON44_24:
+    case BUTTON_AUTO: // number of waves
       if (getParameter(PARAM_CHANGE) > 5) {
         setAndSaveParameter(PARAM_CHANGE, 0);
       }
