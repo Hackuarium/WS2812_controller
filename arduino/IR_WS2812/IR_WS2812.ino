@@ -1,8 +1,8 @@
 
 
-#define LED_PIN     6   // 6 : internal, 5: external
-#define REMOTE_BITS 32  // 32 for 44 button remote, otherwise 13 for 7 buttons remote
-#define NUM_LEDS    3
+#define LED_PIN     5   // 6 : internal, 5: external
+#define REMOTE_BITS 22  // 32 for 44 button remote, otherwise 13 for 7 buttons remote
+#define NUM_LEDS    200
 
 
 void setup() {
@@ -13,11 +13,18 @@ void setup() {
 
 }
 
+byte currentBit = 0;
+
 void loop() {
   loopFastLED();
   delay(50);
-
-
+  /*
+      It seems that FastLED blocs the interrupts so no IR remote control info
+      if we receive some remote control instruction we need to wait a little bit
+  */
+  if (currentBit > 1) {
+    delay(200); 
+  }
 
 }
 

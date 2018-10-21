@@ -50,8 +50,7 @@ void loopFastLED()
 
   if (getParameter(PARAM_POWER) == 0) {
     currentPalette = blackPalette;
-  }
-  else {
+  } else {
     getPalette();
   }
   static uint8_t startIndex = 0;

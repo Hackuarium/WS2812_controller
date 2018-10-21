@@ -10,6 +10,7 @@ byte monitValue = LOW;
 #define BUTTON_RIGHT       2
 #define BUTTON_AUTO        52
 
+#if REMOTE_BITS == 32
 #define BUTTON44_DIMMER   20813653
 #define BUTTON44_BRIGHTER 20736341
 #define BUTTON44_ON       19562325
@@ -28,6 +29,30 @@ byte monitValue = LOW;
 #define BUTTON44_44       19035989
 #define BUTTON44_QUICK    22013269
 #define BUTTON44_SLOW     21503317
+#endif
+
+#if REMOTE_BITS == 22
+#define BUTTON44_DIMMER   22350
+#define BUTTON44_DIMMER2  5973
+#define BUTTON44_BRIGHTER 21840
+#define BUTTON44_BRIGHTER2 26965
+#define BUTTON44_OFF      341
+#define BUTTON44_ON       32597
+#define BUTTON44_21       28501
+#define BUTTON44_22       4437
+#define BUTTON44_23       31061
+#define BUTTON44_24       1877
+#define BUTTON44_31       26453
+#define BUTTON44_32       6485
+#define BUTTON44_33       29013
+#define BUTTON44_34       3925
+#define BUTTON44_41       8021
+#define BUTTON44_42       24917
+#define BUTTON44_43       2389
+#define BUTTON44_44       30549
+#define BUTTON44_QUICK    25941
+#define BUTTON44_SLOW     7509
+#endif
 
 long unsigned timeLast = 0;
 boolean highBit = true;
@@ -35,8 +60,7 @@ boolean raising = true;
 
 long unsigned irCode = 0;
 long unsigned newIrCode = 0;
-long unsigned prevIrCode = 0;
-byte currentBit = 0;
+
 
 void irInterrupt() {
   long unsigned timeCurrent = micros();
@@ -63,15 +87,12 @@ void irInterrupt() {
       }
       currentBit++;
       if (currentBit == REMOTE_BITS) {
-        if (prevIrCode != newIrCode) { // need to receive twice the same code
-          prevIrCode = newIrCode;
-        }
-        {
-          if (irCode != newIrCode) {
+        
+        //  if (irCode != newIrCode) {
             irCode = newIrCode;
             eventIR(irCode);
-          }
-        }
+        //  }
+        
       }
     }
   }
@@ -94,7 +115,6 @@ void eventIR(unsigned long irCode) {
   irCode = irCode >> 7;
   Serial.println(irCode);
   switch (irCode) {
-
     case  BUTTON44_ON:
       setAndSaveParameter(PARAM_POWER, 1);
       break;
@@ -108,12 +128,18 @@ void eventIR(unsigned long irCode) {
         setAndSaveParameter(PARAM_POWER, 0);
       }
       break;
+#ifdef BUTTON44_BRIGHTER2
+    case BUTTON44_BRIGHTER2:
+#endif
     case BUTTON44_BRIGHTER:
     case BUTTON_UP:
       if (getParameter(PARAM_INTENSITY) < 7) {
         incrementAndSaveParameter(PARAM_INTENSITY);
       }
       break;
+#ifdef BUTTON44_DIMMER2
+    case BUTTON44_DIMMER2:
+#endif
     case BUTTON44_DIMMER:
     case BUTTON_DOWN:
       if (getParameter(PARAM_INTENSITY) > 0) {
