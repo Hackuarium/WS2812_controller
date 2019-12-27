@@ -11,6 +11,7 @@ byte monitValue = LOW;
 #define BUTTON_AUTO        52
 
 #if REMOTE_BITS == 32
+#define BUTTON44  1
 #define BUTTON44_DIMMER   20813653
 #define BUTTON44_BRIGHTER 20736341
 #define BUTTON44_ON       19562325
@@ -32,6 +33,7 @@ byte monitValue = LOW;
 #endif
 
 #if REMOTE_BITS == 22
+#define BUTTON44  1
 #define BUTTON44_DIMMER   22350
 #define BUTTON44_DIMMER2  5973
 #define BUTTON44_BRIGHTER 21840
@@ -87,12 +89,16 @@ void irInterrupt() {
       }
       currentBit++;
       if (currentBit == REMOTE_BITS) {
-        
+
         //  if (irCode != newIrCode) {
-            irCode = newIrCode;
-            eventIR(irCode);
+        irCode = newIrCode;
+#ifdef BUTTON44
+        eventIR44(irCode);
+#else
+        eventIR(irCode);
+#endif
         //  }
-        
+
       }
     }
   }
@@ -115,12 +121,14 @@ void eventIR(unsigned long irCode) {
   irCode = irCode >> 7;
   Serial.println(irCode);
   switch (irCode) {
+#ifdef BUTTON44
     case  BUTTON44_ON:
       setAndSaveParameter(PARAM_POWER, 1);
       break;
     case  BUTTON44_OFF:
       setAndSaveParameter(PARAM_POWER, 0);
       break;
+#endif
     case BUTTON_POWER:
       if (getParameter(PARAM_POWER) == 0) {
         setAndSaveParameter(PARAM_POWER, 1);
@@ -128,11 +136,69 @@ void eventIR(unsigned long irCode) {
         setAndSaveParameter(PARAM_POWER, 0);
       }
       break;
+
+    case BUTTON_UP:
+      if (getParameter(PARAM_INTENSITY) < 7) {
+        incrementAndSaveParameter(PARAM_INTENSITY);
+      }
+      break;
+
+    case BUTTON_DOWN:
+      if (getParameter(PARAM_INTENSITY) > 0) {
+        decrementAndSaveParameter(PARAM_INTENSITY);
+      }
+      break;
+
+    case BUTTON_SOUND: // color model
+      if (getParameter(PARAM_COLOR_MODEL) > 8) {
+        setAndSaveParameter(PARAM_COLOR_MODEL, 0);
+      }
+      else {
+        incrementAndSaveParameter(PARAM_COLOR_MODEL);
+      }
+      break;
+    case BUTTON_RIGHT:
+      if (getParameter(PARAM_SPEED) < 6) {
+        incrementAndSaveParameter(PARAM_SPEED);
+      }
+      break;
+    case BUTTON_LEFT:
+      if (getParameter(PARAM_SPEED) > 0) {
+        decrementAndSaveParameter(PARAM_SPEED);
+      }
+      break;
+    case BUTTON_AUTO: // number of waves
+      if (getParameter(PARAM_CHANGE) > 5) {
+        setAndSaveParameter(PARAM_CHANGE, 0);
+      }
+      else {
+        incrementAndSaveParameter(PARAM_CHANGE);
+      }
+      break;
+    default:
+      // if nothing else matches, do the default
+      // default is optional
+      break;
+  }
+}
+
+#ifdef BUTTON44
+void eventIR44(unsigned long irCode) {
+  irCode = irCode >> 7;
+  Serial.println(irCode);
+  switch (irCode) {
+
+    case  BUTTON44_ON:
+      setAndSaveParameter(PARAM_POWER, 1);
+      break;
+    case  BUTTON44_OFF:
+      setAndSaveParameter(PARAM_POWER, 0);
+      break;
+
 #ifdef BUTTON44_BRIGHTER2
     case BUTTON44_BRIGHTER2:
 #endif
     case BUTTON44_BRIGHTER:
-    case BUTTON_UP:
       if (getParameter(PARAM_INTENSITY) < 7) {
         incrementAndSaveParameter(PARAM_INTENSITY);
       }
@@ -146,8 +212,6 @@ void eventIR(unsigned long irCode) {
         decrementAndSaveParameter(PARAM_INTENSITY);
       }
       break;
-
-
     case BUTTON44_31 :
       setAndSaveParameter(PARAM_COLOR_MODEL, 0);
       break;
@@ -172,28 +236,18 @@ void eventIR(unsigned long irCode) {
     case BUTTON44_44:
       setAndSaveParameter(PARAM_COLOR_MODEL, 7);
       break;
-    case BUTTON_SOUND: // color model
-      if (getParameter(PARAM_COLOR_MODEL) > 8) {
-        setAndSaveParameter(PARAM_COLOR_MODEL, 0);
-      }
-      else {
-        incrementAndSaveParameter(PARAM_COLOR_MODEL);
-      }
-      break;
+
     case BUTTON44_QUICK:
-    case BUTTON_RIGHT:
       if (getParameter(PARAM_SPEED) < 6) {
         incrementAndSaveParameter(PARAM_SPEED);
       }
       break;
     case BUTTON44_SLOW:
-    case BUTTON_LEFT:
       if (getParameter(PARAM_SPEED) > 0) {
         decrementAndSaveParameter(PARAM_SPEED);
       }
       break;
     case BUTTON44_24:
-    case BUTTON_AUTO: // number of waves
       if (getParameter(PARAM_CHANGE) > 5) {
         setAndSaveParameter(PARAM_CHANGE, 0);
       }
@@ -207,8 +261,7 @@ void eventIR(unsigned long irCode) {
       break;
   }
 }
-
-
+#endif
 
 void setupIR() {
   pinMode(1, INPUT);
@@ -216,11 +269,3 @@ void setupIR() {
   pinMode(MONITORING, OUTPUT);
   attachInterrupt(2, irInterrupt, CHANGE);
 }
-
-
-
-
-
-
-
-
