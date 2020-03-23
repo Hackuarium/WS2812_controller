@@ -121,15 +121,14 @@ void irInterrupt() {
       currentBit++;
       if (currentBit == REMOTE_BITS) {
 
-        //  if (irCode != newIrCode) {
-        irCode = newIrCode;
+        if (irCode != newIrCode) {
+          irCode = newIrCode;
 #ifdef BUTTON44
-        eventIR44(irCode);
+          eventIR44(irCode);
 #else
-        eventIR(irCode);
+          eventIR(irCode);
 #endif
-        //  }
-
+        }
       }
     }
   }
@@ -149,19 +148,10 @@ byte getIntensity() { // value from 0 to 7 should be converted to 31 to 255
 
 
 void eventIR(unsigned long irCode) {
+  setAndSaveParameter(PARAM_AUTO_MODE_CHANGE, 0);
   irCode = irCode >> 7;
   Serial.println(irCode);
   switch (irCode) {
-#ifdef BUTTON44
-    case  BUTTON44_ON_OFF:
-      if (getParameter(PARAM_POWER) == 0) {
-        setAndSaveParameter(PARAM_POWER, 1);
-      } else {
-        setAndSaveParameter(PARAM_POWER, 0);
-      }
-      break;
-
-#endif
     case BUTTON_POWER:
       if (getParameter(PARAM_POWER) == 0) {
         setAndSaveParameter(PARAM_POWER, 1);
@@ -223,10 +213,10 @@ void eventIR44(unsigned long irCode) {
   // dealing with the loop through all existing modes
   if (irCode == BUTTON44_FADE7) {
     setAndSaveParameter(PARAM_AUTO_MODE_CHANGE, 1);
-   } else {
+  } else {
     setAndSaveParameter(PARAM_AUTO_MODE_CHANGE, 0);
-   }
-  
+  }
+
   switch (irCode) {
     case  BUTTON44_ON_OFF:
       if (getParameter(PARAM_POWER) == 0) {
@@ -285,9 +275,9 @@ void eventIR44(unsigned long irCode) {
       break;
     case BUTTON44_34:
       if (getParameter(PARAM_COLOR_MODEL) != 3) {
-         setAndSaveParameter(PARAM_CHANGE, 6);
+        setAndSaveParameter(PARAM_CHANGE, 6);
       }
-      setAndSaveParameter(PARAM_COLOR_MODEL, 3);     
+      setAndSaveParameter(PARAM_COLOR_MODEL, 3);
       break;
     case BUTTON44_41:
       setAndSaveParameter(PARAM_COLOR_MODEL, 4);
@@ -325,7 +315,7 @@ void eventIR44(unsigned long irCode) {
     case BUTTON44_64:
       setAndSaveParameter(PARAM_COLOR_MODEL, 21);
       break;
-      
+
     case BUTTON44_QUICK:
       if (getParameter(PARAM_SPEED) < 6) {
         incrementAndSaveParameter(PARAM_SPEED);
@@ -347,17 +337,17 @@ void eventIR44(unsigned long irCode) {
       if (getParameter(PARAM_COLOR_MODEL) > -1) {
         decrementAndSaveParameter(PARAM_COLOR_MODEL);
       } else {
-      setAndSaveParameter(PARAM_COLOR_MODEL, 21);
+        setAndSaveParameter(PARAM_COLOR_MODEL, 21);
       }
       break;
     case BUTTON44_JUMP7:
       if (getParameter(PARAM_COLOR_MODEL) < 21) {
         incrementAndSaveParameter(PARAM_COLOR_MODEL);
       } else {
-      setAndSaveParameter(PARAM_COLOR_MODEL, -1);
+        setAndSaveParameter(PARAM_COLOR_MODEL, -1);
       }
       break;
-      
+
     case BUTTON44_RED_UP:
       if (getParameter(PARAM_RED_INTENSITY) < 7) {
         incrementAndSaveParameter(PARAM_RED_INTENSITY);

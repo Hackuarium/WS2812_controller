@@ -1,7 +1,7 @@
 
 
 #define LED_PIN     5   // 6 : internal, 5: external
-#define REMOTE_BITS 32  // 32 for 44 button remote, otherwise 13 for 7 buttons remote
+#define REMOTE_BITS 13  // 32 for 44 button remote, otherwise 13 for 7 buttons remote
 #define NUM_LEDS    400
 #define AUTOCHANGE_VALUE 100
 
