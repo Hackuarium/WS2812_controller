@@ -14,7 +14,7 @@
 
 #include <avr/eeprom.h>
 
-#define MAX_PARAM 26   // If the MAX_PARAM change you need to change the pointer in the EEPROM
+#define MAX_PARAM 10   // If the MAX_PARAM change you need to change the pointer in the EEPROM
 
 #define PARAM_POWER             0
 #define PARAM_INTENSITY         1
@@ -50,6 +50,7 @@ void setupParameters() {
     setParameter(PARAM_AUTO_MODE_CHANGE, 0);
     saveParameters();
   }
+  
 }
 
 

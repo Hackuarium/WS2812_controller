@@ -1,6 +1,6 @@
 #include <PololuLedStrip.h>
 
-#define LED_PIN     5   // 6 : internal, 5: external
+#define LED_PIN     5  // 6 : internal, 5: external
 
 #define LINES         8
 #define LED_PER_LINE  25
@@ -21,6 +21,9 @@ void setup() {
   setupParameters();
   setupIR();
   resetState();
+
+
+
 }
 
 unsigned long lastRun = 0;
@@ -36,7 +39,6 @@ void loop() {
     update();
     ledStrip.write(colors, LED_COUNT);
   }
-
 }
 
 void clearState() {

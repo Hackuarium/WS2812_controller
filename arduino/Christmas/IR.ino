@@ -92,7 +92,7 @@ void eventIR(unsigned long irCode) {
 
     case BUTTON_SOUND: // color model
       if (getParameter(PARAM_COLOR_MODEL) > 8) {
-        setAndSaveParameter(PARAM_COLOR_MODEL, 1);
+        setAndSaveParameter(PARAM_COLOR_MODEL, 0);
       }
       else {
         incrementAndSaveParameter(PARAM_COLOR_MODEL);
@@ -110,7 +110,7 @@ void eventIR(unsigned long irCode) {
       break;
     case BUTTON_AUTO: // change of program
       resetState();
-      if (getParameter(PARAM_CURRENT_PROGRAM) > 0) {
+      if (getParameter(PARAM_CURRENT_PROGRAM) > 4) {
         setAndSaveParameter(PARAM_CURRENT_PROGRAM, 0);
       }
       else {
@@ -122,6 +122,7 @@ void eventIR(unsigned long irCode) {
       // default is optional
       break;
   }
+  printParameters();
 }
 
 void setupIR() {

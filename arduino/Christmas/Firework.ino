@@ -1,16 +1,16 @@
-#define COMET_DECREASE_SPEED 25
+#define FIREWORK_DECREASE_SPEED 25
 
-unsigned int cometCounter = 0;
+unsigned int fireworkCounter = 0;
 
 
 // We will store in state if it is the head of the comet
 
-void updateComet(byte inverted) {
-  cometCounter++;
-  if ((cometCounter % (7 - getParameter(PARAM_SPEED))) == 0) {
+void updateFirework() {
+  fireworkCounter++;
+  if ((fireworkCounter % (7 - getParameter(PARAM_SPEED))) == 0) {
     // we move the head of the comet
     for (byte line = 0; line < LINES; line++) {
-      if ((line + inverted) % 2) { // check the direction
+      if (line % 2) { // check the direction
         for (byte i = 0; i < LED_PER_LINE; i++) {
           int led = line * LED_PER_LINE + i;
           if (state[led]) { // need to turn on the next one full power
@@ -18,6 +18,9 @@ void updateComet(byte inverted) {
             if (i > 0) {
               state[led - 1] = 1;
               copy(led, led - 1);
+            }
+            if (i < 5) { // firework
+              firework();
             }
           }
         }
@@ -30,24 +33,37 @@ void updateComet(byte inverted) {
               state[led + 1] = 1;
               copy(led, led + 1);
             }
+            if (i > (LED_PER_LINE - 6)) { // firework
+              firework();
+            }
           }
         }
       }
     }
 
-    // we decreate the intensity of the coment
+    // we decreate the intensity of the firework
     for (int led = 0; led < LED_COUNT; led++) {
       if (! state[led]) {
-        decreaseColor(led, COMET_DECREASE_SPEED);
+        decreaseColor(led, FIREWORK_DECREASE_SPEED);
       }
     }
   }
 
-  // we create a new comet
+  // we create a new firework
   if (random(16 - getParameter(PARAM_INTENSITY) * 2) != 0) return;
   int line = random(0, LINES);
   int led = line * LED_PER_LINE + (line % 2) * (LED_PER_LINE - 1);
   state[led] = 1;
   setColor(led);
+}
 
+void firework() {
+  byte line = random(0, LINES);
+  for (byte i = 0; i < 10; i++) {
+    if (line % 2) {
+      colors[line * LED_PER_LINE + random(0, 5)] = getColor(COLOR_ORANGE, 0);
+    } else {
+      colors[(line + 1) * LED_PER_LINE - random(1, 6)] = getColor(COLOR_ORANGE_RANDOM, 0);
+    }
+  }
 }
