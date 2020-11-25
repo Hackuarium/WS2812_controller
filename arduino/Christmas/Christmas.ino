@@ -1,4 +1,4 @@
-#include <PololuLedStrip.h>
+#include "./PololuLedStrip.h"
 
 #define LED_PIN     5  // 6 : internal, 5: external
 

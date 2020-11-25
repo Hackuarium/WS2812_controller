@@ -110,7 +110,7 @@ void eventIR(unsigned long irCode) {
       break;
     case BUTTON_AUTO: // change of program
       resetState();
-      if (getParameter(PARAM_CURRENT_PROGRAM) > 4) {
+      if (getParameter(PARAM_CURRENT_PROGRAM) > 5) {
         setAndSaveParameter(PARAM_CURRENT_PROGRAM, 0);
       }
       else {

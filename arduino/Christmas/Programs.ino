@@ -21,6 +21,9 @@ void update() {
       updateWave(1);
       break;
     case 5:
+      updateTree();
+      break;
+    case 6:
       updateFirework();
       break;
   }

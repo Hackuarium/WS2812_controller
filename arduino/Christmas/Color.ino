@@ -4,10 +4,11 @@
 
 #define COLOR_ORANGE         1
 #define COLOR_ORANGE_RANDOM  2
-#define COLOR_CYAN           3
-#define COLOR_CYAN_RANDOM    4
+#define COLOR_GREEN          3
+#define COLOR_GREEN_RANDOM   4
 #define COLOR_VIOLET         5
 #define COLOR_VIOLET_RANDOM  6
+
 
 
 uint16_t hsvStatus = 0;
@@ -47,12 +48,12 @@ rgb_color getColor(byte colorModel, byte hsbChangeSpeed) {
   if (colorModel == COLOR_ORANGE_RANDOM) { // random red orange yellow
     return hsvToRGB(0 + random(0, 60), 255, 255);
   }
-  if (colorModel == COLOR_CYAN) { // moving cyan bleu
+  if (colorModel == COLOR_GREEN) {
     hsvStatus = (hsvStatus + hsbChangeSpeed) % 120;
-    return hsvToRGB(180 + (hsvStatus < 60 ? hsvStatus : 119 - hsvStatus), 255, 255);
+    return hsvToRGB(90 + (hsvStatus < 60 ? hsvStatus : 119 - hsvStatus), 255, 255);
   }
-  if (colorModel == COLOR_CYAN_RANDOM) { // random cyan bleu
-    return hsvToRGB(180 + random(0, 60), 255, 255);
+  if (colorModel == COLOR_GREEN_RANDOM) {
+    return hsvToRGB(90 + random(0, 60), 255, 255);
   }
   if (colorModel == COLOR_VIOLET) { // moving blue violet
     hsvStatus = (hsvStatus + hsbChangeSpeed) % 120;
@@ -131,7 +132,7 @@ rgb_color hsvToRGB(uint16_t h, uint8_t s, uint8_t v) {
     case 4: r = t; g = p; b = v; break;
     case 5: r = v; g = p; b = q; break;
   }
-  return rgb_color(r, g, b);
+  return rgb_color(g, r, b);
 }
 
 rgb_color getRandomRGBColor() {

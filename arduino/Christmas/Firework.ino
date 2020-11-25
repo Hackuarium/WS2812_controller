@@ -19,7 +19,7 @@ void updateFirework() {
               state[led - 1] = 1;
               copy(led, led - 1);
             }
-            if (i < 5) { // firework
+            if (i < 2) { // firework
               firework();
             }
           }
@@ -33,7 +33,7 @@ void updateFirework() {
               state[led + 1] = 1;
               copy(led, led + 1);
             }
-            if (i > (LED_PER_LINE - 6)) { // firework
+            if (i > (LED_PER_LINE - 3)) { // firework
               firework();
             }
           }
@@ -54,16 +54,16 @@ void updateFirework() {
   int line = random(0, LINES);
   int led = line * LED_PER_LINE + (line % 2) * (LED_PER_LINE - 1);
   state[led] = 1;
-  setColor(led);
+  colors[led]=rgb_color(255, 255, 255);
 }
 
 void firework() {
   byte line = random(0, LINES);
-  for (byte i = 0; i < 10; i++) {
+  for (byte i = 0; i < 20; i++) {
     if (line % 2) {
-      colors[line * LED_PER_LINE + random(0, 5)] = getColor(COLOR_ORANGE, 0);
+      setColor(line * LED_PER_LINE + random(0, 6));
     } else {
-      colors[(line + 1) * LED_PER_LINE - random(1, 6)] = getColor(COLOR_ORANGE_RANDOM, 0);
+      setColor((line + 1) * LED_PER_LINE - random(1, 7));
     }
   }
 }
