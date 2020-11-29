@@ -50,7 +50,7 @@ void setupParameters() {
     setParameter(PARAM_AUTO_MODE_CHANGE, 0);
     saveParameters();
   }
-  
+
 }
 
 

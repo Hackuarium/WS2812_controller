@@ -26,6 +26,4 @@ void updateWave(byte inverted) {
       colors[line * LED_PER_LINE].blue = nextColor.blue;
     }
   }
-
-
 }

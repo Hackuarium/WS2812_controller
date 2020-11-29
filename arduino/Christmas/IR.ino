@@ -71,10 +71,11 @@ void eventIR(unsigned long irCode) {
   Serial.println(irCode);
   switch (irCode) {
     case BUTTON_POWER:
-      if (getParameter(PARAM_POWER) == 0) {
-        setAndSaveParameter(PARAM_POWER, 1);
-      } else {
+      if (getParameter(PARAM_POWER) > 2) {
         setAndSaveParameter(PARAM_POWER, 0);
+      }
+      else {
+        incrementAndSaveParameter(PARAM_POWER);
       }
       break;
 

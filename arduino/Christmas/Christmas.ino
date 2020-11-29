@@ -21,9 +21,6 @@ void setup() {
   setupParameters();
   setupIR();
   resetState();
-
-
-
 }
 
 unsigned long lastRun = 0;
@@ -32,7 +29,7 @@ void loop() {
   // max 25 per seconds
   if (currentBit > 1) {
     delay(200);
-    currentBit=0;
+    currentBit = 0;
   }
   if ((millis() - lastRun) >= 25) {
     lastRun = millis();

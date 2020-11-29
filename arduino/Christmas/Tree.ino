@@ -6,14 +6,14 @@ void updateTree() {
 
   for (uint16_t led = 0; led < LED_COUNT; led++) {
     if (state[led] == 0) {
-      colors[led] =  rgb_color(255, 0, 0);
+      colors[led] =  rgb_color(getIntensity(), 0, 0);
     } else {
       state[led]--;
     }
   }
 
   uint16_t led = random(0, LED_COUNT);
-  state[led] = getParameter(PARAM_INTENSITY) * 4;
-  setColor(led);
+  state[led] = random(getParameter(PARAM_INTENSITY), getParameter(PARAM_INTENSITY) * 4);
+  setFullIntensityColor(led);
 
 }

@@ -8,35 +8,18 @@ unsigned int fireworkCounter = 0;
 void updateFirework() {
   fireworkCounter++;
   if ((fireworkCounter % (7 - getParameter(PARAM_SPEED))) == 0) {
-    // we move the head of the comet
+
+    // we move the head
     for (byte line = 0; line < LINES; line++) {
-      if (line % 2) { // check the direction
-        for (byte i = 0; i < LED_PER_LINE; i++) {
-          int led = line * LED_PER_LINE + i;
-          if (state[led]) { // need to turn on the next one full power
-            state[led] = 0;
-            if (i > 0) {
-              state[led - 1] = 1;
-              copy(led, led - 1);
-            }
-            if (i < 2) { // firework
-              firework();
-            }
-          }
-        }
+      if ((line % 2) == 0) { // check the direction
+        moveCometHeadUp(line);
       } else {
-        for (int i = LED_PER_LINE - 1; i >= 0 ; i--) {
-          int led = line * LED_PER_LINE + i;
-          if (state[led]) { // need to turn on the next one full power
-            state[led] = 0;
-            if (i < LED_PER_LINE - 1) {
-              state[led + 1] = 1;
-              copy(led, led + 1);
-            }
-            if (i > (LED_PER_LINE - 3)) { // firework
-              firework();
-            }
-          }
+        moveCometHeadDown(line);
+      }
+      for (byte i = LED_PER_LINE - 3; i < LED_PER_LINE; i++) {
+        int led = getLed(line, i);
+        if (state[led]) {
+          firework();
         }
       }
     }
@@ -52,18 +35,19 @@ void updateFirework() {
   // we create a new firework
   if (random(16 - getParameter(PARAM_INTENSITY) * 2) != 0) return;
   int line = random(0, LINES);
-  int led = line * LED_PER_LINE + (line % 2) * (LED_PER_LINE - 1);
+  int led = getLed(line, 0, false);
+  Serial.println(led);
   state[led] = 1;
-  colors[led]=rgb_color(255, 255, 255);
+  colors[led] = rgb_color(getIntensity(), getIntensity(), getIntensity());
 }
 
 void firework() {
   byte line = random(0, LINES);
   for (byte i = 0; i < 20; i++) {
     if (line % 2) {
-      setColor(line * LED_PER_LINE + random(0, 6));
+      setFullIntensityColor(line * LED_PER_LINE + random(0, 6));
     } else {
-      setColor((line + 1) * LED_PER_LINE - random(1, 7));
+      setFullIntensityColor((line + 1) * LED_PER_LINE - random(1, 7));
     }
   }
 }

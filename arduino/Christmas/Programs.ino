@@ -1,6 +1,6 @@
 
 void update() {
-  if (getParameter(PARAM_POWER)) {
+  if (getParameter(PARAM_POWER) == 0) {
     black();
     return;
   }
@@ -25,6 +25,9 @@ void update() {
       break;
     case 6:
       updateFirework();
+      break;
+    case 7:
+      updateTinsel();
       break;
   }
 }
