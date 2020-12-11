@@ -1,5 +1,7 @@
 uint16_t treeCounter = 0;
 
+// green chrismas tree
+
 void updateTree() {
   treeCounter++;
   if ((treeCounter % (24 - getParameter(PARAM_SPEED) * 4 + 1)) != 0) return;

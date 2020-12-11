@@ -1,7 +1,22 @@
 
 void update() {
+
+
+
   if (getParameter(PARAM_POWER) == 0) {
     black();
+    Serial.println(getParameter(PARAM_SPECIAL_CONFIG));
+    if (getParameter(PARAM_SPECIAL_CONFIG) > 0) {
+      Serial.println("Config");
+      setParameter(PARAM_SPECIAL_CONFIG, getParameter(PARAM_SPECIAL_CONFIG) - 1);
+      // need to display the current config parameters
+      for (byte line = 0; line < LINES; line++) {
+        for (byte i = 0; i < getParameter(PARAM_COLOR_CHANGE_SPEED); i++) {
+          colors[getLed(line, i)] =  rgb_color(255, 0, 0);
+        }
+      }
+    }
+
     return;
   }
   switch (getParameter(PARAM_CURRENT_PROGRAM)) {
@@ -27,7 +42,7 @@ void update() {
       updateFirework();
       break;
     case 7:
-      updateTinsel();
+      updateColorTree();
       break;
   }
 }

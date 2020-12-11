@@ -61,20 +61,20 @@ void irInterrupt() {
   timeLast = timeCurrent;
 };
 
-
-
-
-
 void eventIR(unsigned long irCode) {
   setAndSaveParameter(PARAM_AUTO_MODE_CHANGE, 0);
   irCode = irCode >> 7;
-  Serial.println(irCode);
+  if ( getParameter(PARAM_POWER) == 0) {
+    Serial.print("P");
+    Serial.println(getParameter(PARAM_POWER));
+    setParameter(PARAM_SPECIAL_CONFIG, 100); // 4 seconds to display the current configuration while being off
+    Serial.println(getParameter(PARAM_SPECIAL_CONFIG));
+  }
   switch (irCode) {
     case BUTTON_POWER:
       if (getParameter(PARAM_POWER) > 2) {
         setAndSaveParameter(PARAM_POWER, 0);
-      }
-      else {
+      } else {
         incrementAndSaveParameter(PARAM_POWER);
       }
       break;
@@ -100,18 +100,31 @@ void eventIR(unsigned long irCode) {
       }
       break;
     case BUTTON_RIGHT:
-      if (getParameter(PARAM_SPEED) < 6) {
-        incrementAndSaveParameter(PARAM_SPEED);
+      if (getParameter(PARAM_POWER) > 0) {
+        if (getParameter(PARAM_SPEED) < 6) {
+          incrementAndSaveParameter(PARAM_SPEED);
+        }
+      } else {
+        if (getParameter(PARAM_COLOR_CHANGE_SPEED) < 6) {
+          incrementAndSaveParameter(PARAM_COLOR_CHANGE_SPEED);
+        }
       }
+
       break;
     case BUTTON_LEFT:
-      if (getParameter(PARAM_SPEED) > 0) {
-        decrementAndSaveParameter(PARAM_SPEED);
+      if (getParameter(PARAM_POWER) > 0) {
+        if (getParameter(PARAM_SPEED) > 0) {
+          decrementAndSaveParameter(PARAM_SPEED);
+        }
+      } else {
+        if (getParameter(PARAM_COLOR_CHANGE_SPEED) > 0) {
+          decrementAndSaveParameter(PARAM_COLOR_CHANGE_SPEED);
+        }
       }
       break;
     case BUTTON_AUTO: // change of program
       resetState();
-      if (getParameter(PARAM_CURRENT_PROGRAM) > 5) {
+      if (getParameter(PARAM_CURRENT_PROGRAM) > 6) {
         setAndSaveParameter(PARAM_CURRENT_PROGRAM, 0);
       }
       else {

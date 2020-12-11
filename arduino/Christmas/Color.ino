@@ -1,4 +1,3 @@
-#define HSV_CHANGE_SPEED  1
 #define HSV_RANDOM        60
 
 #define COLOR_ORANGE         1
@@ -23,6 +22,15 @@ void copy(uint16_t from, uint16_t to) {
   colors[to].blue = colors[from].blue;
 }
 
+
+byte getHSVSpeedChange() {
+  if (getParameter(PARAM_COLOR_CHANGE_SPEED) >= 3) {
+    return pow(2, getParameter(PARAM_COLOR_CHANGE_SPEED) - 3);
+  } else {
+    return random(0, pow(4, 3-getParameter(PARAM_COLOR_CHANGE_SPEED))) == 0;
+  }
+}
+
 // 1 to 7: rgb color
 // 8 : one of the 7 colors
 // 9 : hsl +- 60
@@ -30,7 +38,7 @@ void copy(uint16_t from, uint16_t to) {
 // 11: hsl random
 
 rgb_color getColor() {
-  return getColor( getParameter(PARAM_COLOR_MODEL), HSV_CHANGE_SPEED);
+  return getColor( getParameter(PARAM_COLOR_MODEL), getHSVSpeedChange());
 }
 
 rgb_color getColor(byte hsbChangeSpeed ) {
@@ -96,7 +104,7 @@ void setColor(uint16_t led) {
 }
 
 void setFullIntensityColor(uint16_t led) {
-  colors[led] = getColor( getParameter(PARAM_COLOR_MODEL), HSV_CHANGE_SPEED, 255);
+  colors[led] = getColor( getParameter(PARAM_COLOR_MODEL), getHSVSpeedChange(), 255);
 }
 
 

@@ -26,11 +26,13 @@ void setup() {
 unsigned long lastRun = 0;
 
 void loop() {
-  // max 25 per seconds
-  if (currentBit > 1) {
+
+  if (currentBit > 1) { // wait ... we are receiving IR information
     delay(200);
     currentBit = 0;
   }
+
+  // max 25 per seconds
   if ((millis() - lastRun) >= 25) {
     lastRun = millis();
     update();
