@@ -65,10 +65,7 @@ void eventIR(unsigned long irCode) {
   setAndSaveParameter(PARAM_AUTO_MODE_CHANGE, 0);
   irCode = irCode >> 7;
   if ( getParameter(PARAM_POWER) == 0) {
-    Serial.print("P");
-    Serial.println(getParameter(PARAM_POWER));
     setParameter(PARAM_SPECIAL_CONFIG, 100); // 4 seconds to display the current configuration while being off
-    Serial.println(getParameter(PARAM_SPECIAL_CONFIG));
   }
   switch (irCode) {
     case BUTTON_POWER:
@@ -80,23 +77,42 @@ void eventIR(unsigned long irCode) {
       break;
 
     case BUTTON_UP:
-      if (getParameter(PARAM_INTENSITY) < 7) {
-        incrementAndSaveParameter(PARAM_INTENSITY);
+      if (getParameter(PARAM_POWER) > 0) {
+        if (getParameter(PARAM_INTENSITY) < 7) {
+          incrementAndSaveParameter(PARAM_INTENSITY);
+        }
+      } else {
+        if (getParameter(PARAM_COLOR_DECREASE_SPEED) < 6) {
+          incrementAndSaveParameter(PARAM_COLOR_DECREASE_SPEED);
+        }
       }
       break;
-
     case BUTTON_DOWN:
-      if (getParameter(PARAM_INTENSITY) > 0) {
-        decrementAndSaveParameter(PARAM_INTENSITY);
+      if (getParameter(PARAM_POWER) > 0) {
+        if (getParameter(PARAM_INTENSITY) > 0) {
+          decrementAndSaveParameter(PARAM_INTENSITY);
+        }
+      } else {
+        if (getParameter(PARAM_COLOR_DECREASE_SPEED) > 0) {
+          decrementAndSaveParameter(PARAM_COLOR_DECREASE_SPEED);
+        }
       }
       break;
 
     case BUTTON_SOUND: // color model
-      if (getParameter(PARAM_COLOR_MODEL) > 8) {
-        setAndSaveParameter(PARAM_COLOR_MODEL, 0);
-      }
-      else {
-        incrementAndSaveParameter(PARAM_COLOR_MODEL);
+      if (getParameter(PARAM_POWER) > 0) {
+        if (getParameter(PARAM_COLOR_MODEL) > 8) {
+          setAndSaveParameter(PARAM_COLOR_MODEL, 0);
+        }
+        else {
+          incrementAndSaveParameter(PARAM_COLOR_MODEL);
+        }
+      } else {
+        if (getParameter(PARAM_COLOR_DECREASE_MODEL) == 0) {
+          setParameter(PARAM_COLOR_DECREASE_MODEL, 1);
+        } else {
+          setParameter(PARAM_COLOR_DECREASE_MODEL, 0);
+        }
       }
       break;
     case BUTTON_RIGHT:

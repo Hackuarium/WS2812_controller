@@ -14,18 +14,21 @@
 
 #include <avr/eeprom.h>
 
-#define MAX_PARAM 10   // If the MAX_PARAM change you need to change the pointer in the EEPROM
+#define MAX_PARAM 16   // If the MAX_PARAM change you need to change the pointer in the EEPROM
 
 #define PARAM_POWER                0
 #define PARAM_INTENSITY            1
 #define PARAM_SPEED                2
 #define PARAM_CURRENT_PROGRAM      3
 #define PARAM_COLOR_MODEL          4
-#define PARAM_COLOR_CHANGE_SPEED   5  //  0 to 6
+#define PARAM_COLOR_CHANGE_SPEED   5 // 0 to 6
+#define PARAM_COLOR_DECREASE_SPEED 6 // 0 to 6
+#define PARAM_COLOR_DECREASE_MODEL 7 // 0 or 1
 
 #define PARAM_AUTO_MODE_CHANGE     8
 
-#define PARAM_SPECIAL_CONFIG       9
+
+#define PARAM_SPECIAL_CONFIG       15
 
 
 #define EE_START_PARAM          0 // We save the parameter from byte 0 of EEPROM
@@ -52,6 +55,8 @@ void setupParameters() {
     setParameter(PARAM_COLOR_MODEL, 0);
     setParameter(PARAM_AUTO_MODE_CHANGE, 0);
     setParameter(PARAM_COLOR_CHANGE_SPEED, 0);
+    setParameter(PARAM_COLOR_DECREASE_SPEED, 5);
+    setParameter(PARAM_COLOR_DECREASE_MODEL, 0);
     saveParameters();
   }
 

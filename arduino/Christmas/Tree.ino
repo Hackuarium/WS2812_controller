@@ -4,18 +4,20 @@ uint16_t treeCounter = 0;
 
 void updateTree() {
   treeCounter++;
-  if ((treeCounter % (24 - getParameter(PARAM_SPEED) * 4 + 1)) != 0) return;
+  if ((treeCounter % 4) != 0) return; // slow down a little bit the update
 
   for (uint16_t led = 0; led < LED_COUNT; led++) {
     if (state[led] == 0) {
-      colors[led] =  rgb_color(getIntensity(), 0, 0);
+      colors[led] =  RGBColor(getIntensity(), 0, 0);
     } else {
       state[led]--;
     }
   }
 
-  uint16_t led = random(0, LED_COUNT);
-  state[led] = random(getParameter(PARAM_INTENSITY), getParameter(PARAM_INTENSITY) * 4);
-  setFullIntensityColor(led);
-
+  // executed 6 times per s
+  for (uint8_t i = 0; i < getParameter(PARAM_INTENSITY); i++) {
+    uint16_t led = random(0, LED_COUNT);
+    state[led] = random(pow(2, 6 - getParameter(PARAM_SPEED)), pow(2, 6 - getParameter(PARAM_SPEED)) * 4); // how long it will stay on
+    setFullIntensityColor(led);
+  }
 }

@@ -6,8 +6,8 @@
 #define COLOR_GREEN_RANDOM   4
 #define COLOR_VIOLET         5
 #define COLOR_VIOLET_RANDOM  6
-#define COLOR_RANDOM_RAINBOW 7
-#define COLOR_RAINBOW        8
+#define COLOR_RAINBOW        7
+#define COLOR_RAINBOW_RANDOM 8
 #define COLOR_FULL_RANDOM    9
 
 uint16_t hsvStatus = 0;
@@ -17,9 +17,9 @@ void setCurrentColorModel(uint8_t colorModel) {
 }
 
 void copy(uint16_t from, uint16_t to) {
-  colors[to].red = colors[from].red;
-  colors[to].green = colors[from].green;
-  colors[to].blue = colors[from].blue;
+  colors[to].r = colors[from].r;
+  colors[to].g = colors[from].g;
+  colors[to].b = colors[from].b;
 }
 
 
@@ -27,7 +27,7 @@ byte getHSVSpeedChange() {
   if (getParameter(PARAM_COLOR_CHANGE_SPEED) >= 3) {
     return pow(2, getParameter(PARAM_COLOR_CHANGE_SPEED) - 3);
   } else {
-    return random(0, pow(4, 3-getParameter(PARAM_COLOR_CHANGE_SPEED))) == 0;
+    return random(0, pow(4, 3 - getParameter(PARAM_COLOR_CHANGE_SPEED))) == 0;
   }
 }
 
@@ -37,21 +37,21 @@ byte getHSVSpeedChange() {
 // 10: hsl
 // 11: hsl random
 
-rgb_color getColor() {
+RGBColor getColor() {
   return getColor( getParameter(PARAM_COLOR_MODEL), getHSVSpeedChange());
 }
 
-rgb_color getColor(byte hsbChangeSpeed ) {
+RGBColor getColor(byte hsbChangeSpeed ) {
   return getColor( getParameter(PARAM_COLOR_MODEL), hsbChangeSpeed);
 }
 
-rgb_color getColor(byte colorModel, byte hsbChangeSpeed) {
+RGBColor getColor(byte colorModel, byte hsbChangeSpeed) {
   return getColor(colorModel,  hsbChangeSpeed, getIntensity());
 }
 
-rgb_color getColor(byte colorModel, byte hsbChangeSpeed, byte intensity) {
+RGBColor getColor(byte colorModel, byte hsbChangeSpeed, byte intensity) {
   if (colorModel == 0) {
-    return rgb_color(255, 255, 255);
+    return RGBColor(255, 255, 255);
   }
   if (colorModel == COLOR_ORANGE) {// moving red orange yellow
     hsvStatus = (hsvStatus + hsbChangeSpeed) % 120;
@@ -74,7 +74,7 @@ rgb_color getColor(byte colorModel, byte hsbChangeSpeed, byte intensity) {
   if (colorModel == COLOR_VIOLET_RANDOM) { // random blue violet
     return hsvToRGB(240 + random(0, 120), 255, intensity);
   }
-  if (colorModel == COLOR_RANDOM_RAINBOW) {
+  if (colorModel == COLOR_RAINBOW_RANDOM) {
     hsvStatus = (hsvStatus + hsbChangeSpeed) % 360;
     uint16_t h = (hsvStatus + random(0, HSV_RANDOM)) % 360;
     return hsvToRGB(h, 255, intensity);
@@ -94,7 +94,7 @@ rgb_color getColor(byte colorModel, byte hsbChangeSpeed, byte intensity) {
     if (colorModel & 2) r = MAX_INTENSITY;
     if (colorModel & 1) g = MAX_INTENSITY;
     if (colorModel & 4) b = MAX_INTENSITY;
-    return rgb_color(r, g, b);
+    return RGBColor(r, g, b);
   */
 
 }
@@ -107,26 +107,41 @@ void setFullIntensityColor(uint16_t led) {
   colors[led] = getColor( getParameter(PARAM_COLOR_MODEL), getHSVSpeedChange(), 255);
 }
 
-
 void decreaseColor(int led) {
-  decreaseColor(led, 1);
+  uint8_t increment = 0;
+  if (getParameter(PARAM_COLOR_DECREASE_SPEED) >= 2) {
+    increment = pow(3, getParameter(PARAM_COLOR_DECREASE_SPEED) - 2);
+  } else {
+    increment = random(0, pow(2, 2 - getParameter(PARAM_COLOR_DECREASE_SPEED))) == 0;
+  }
+  decreaseColor(led, increment);
 }
 
 void decreaseColor(uint16_t led, uint8_t increment) {
-  if (colors[led].red > increment) {
-    colors[led].red -= increment;
-  } else {
-    colors[led].red = 0;
-  }
-  if (colors[led].green > increment) {
-    colors[led].green -= increment;
-  } else {
-    colors[led].green = 0;
-  }
-  if (colors[led].blue > increment) {
-    colors[led].blue -= increment;
-  } else {
-    colors[led].blue = 0;
+  if (getParameter(PARAM_COLOR_DECREASE_MODEL) == 0) {
+    if (colors[led].r > increment) {
+      colors[led].r -= increment;
+    } else {
+      colors[led].r = 0;
+    }
+    if (colors[led].g > increment) {
+      colors[led].g -= increment;
+    } else {
+      colors[led].g = 0;
+    }
+    if (colors[led].b > increment) {
+      colors[led].b -= increment;
+    } else {
+      colors[led].b = 0;
+    }
+  } else { // decrease in HSV model
+    HSVColor hsv = rgbToHSV(colors[led]);
+    if (hsv.v > increment) {
+      hsv.v-=increment;
+      colors[led] = hsvToRGB(hsv);
+    } else {
+      colors[led] = RGBColor(0,0,0);
+    }
   }
 }
 
@@ -135,7 +150,7 @@ void decreaseColor(uint16_t led, uint8_t increment) {
    s: saturation (0-255)
    h: hue (0-255)
 */
-rgb_color hsvToRGB(uint16_t h, uint8_t s, uint8_t v) {
+RGBColor hsvToRGB(uint16_t h, uint8_t s, uint8_t v) {
   uint8_t f = (h % 60) * 255 / 60;
   uint8_t p = (255 - s) * (uint16_t)v / 255;
   uint8_t q = (255 - f * (uint16_t)s / 255) * (uint16_t)v / 255;
@@ -149,10 +164,45 @@ rgb_color hsvToRGB(uint16_t h, uint8_t s, uint8_t v) {
     case 4: r = t; g = p; b = v; break;
     case 5: r = v; g = p; b = q; break;
   }
-  return rgb_color(g, r, b);
+  return RGBColor(g, r, b);
 }
 
-rgb_color getRandomRGBColor() {
+RGBColor hsvToRGB(HSVColor hsv) {
+  return hsvToRGB(hsv.h, hsv.s, hsv.v);
+}
+
+
+HSVColor rgbToHSV(RGBColor rgb) {
+  HSVColor hsv;
+
+  uint8_t rgbMin = rgb.r < rgb.g ? (rgb.r < rgb.b ? rgb.r : rgb.b) : (rgb.g < rgb.b ? rgb.g : rgb.b);
+  uint8_t rgbMax = rgb.r > rgb.g ? (rgb.r > rgb.b ? rgb.r : rgb.b) : (rgb.g > rgb.b ? rgb.g : rgb.b);
+
+  hsv.v = rgbMax;
+  if (hsv.v == 0) {
+    hsv.h = 0;
+    hsv.s = 0;
+    return hsv;
+  }
+
+  hsv.s = 255 * long(rgbMax - rgbMin) / hsv.v;
+  if (hsv.s == 0) {
+    hsv.h = 0;
+    return hsv;
+  }
+
+  if (rgbMax == rgb.r)
+    hsv.h = 0 + 60 * (rgb.g - rgb.b) / (rgbMax - rgbMin);
+  else if (rgbMax == rgb.g)
+    hsv.h = 120 + 60 * (rgb.b - rgb.r) / (rgbMax - rgbMin);
+  else
+    hsv.h = 240 + 60 * (rgb.r - rgb.g) / (rgbMax - rgbMin);
+
+  return hsv;
+}
+
+
+RGBColor getRandomRGBColor() {
   byte colorModel = random(1, 8);
   uint8_t r = 0;
   uint8_t g = 0;
@@ -160,7 +210,7 @@ rgb_color getRandomRGBColor() {
   if (colorModel & 2) r = getIntensity();
   if (colorModel & 1) g = getIntensity();
   if (colorModel & 4) b = getIntensity();
-  return rgb_color(r, g, b);
+  return RGBColor(r, g, b);
 }
 
 byte getIntensity() {

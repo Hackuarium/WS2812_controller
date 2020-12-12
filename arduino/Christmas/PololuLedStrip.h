@@ -54,27 +54,35 @@
 
 namespace Pololu
 {
-#ifndef _POLOLU_RGB_COLOR
-#define _POLOLU_RGB_COLOR
-typedef struct rgb_color
-{
-  unsigned char red, green, blue;
-  rgb_color() {};
-  rgb_color(uint8_t r, uint8_t g, uint8_t b) : red(r), green(g), blue(b) {};
-} rgb_color;
+#ifndef _POLOLU_RGBColor
+#define _POLOLU_RGBColor
+typedef struct RGBColor {
+  uint8_t r, g, b;
+  RGBColor() {};
+  RGBColor(uint8_t r, uint8_t g, uint8_t b) : r(r), g(g), b(b) {};
+};
 #endif
+
+typedef struct HSVColor {
+  uint16_t h;
+  uint8_t s, v;
+  HSVColor() {};
+  HSVColor(uint16_t h, uint8_t s, uint8_t v) : h(h), s(s), v(v) {};
+};
+
+
 
 class PololuLedStripBase
 {
   public:
     static bool interruptFriendly;
-    void virtual write(rgb_color *, unsigned int count) = 0;
+    void virtual write(RGBColor *, unsigned int count) = 0;
 };
 
 template<unsigned char pin> class PololuLedStrip : public PololuLedStripBase
 {
   public:
-    void virtual write(rgb_color *, unsigned int count);
+    void virtual write(RGBColor *, unsigned int count);
 };
 
 #if defined(__AVR_ATmega32U4__)
@@ -293,7 +301,7 @@ const unsigned char pinAddr[] =
 
 #endif
 
-template<unsigned char pin> void __attribute__((aligned(16))) PololuLedStrip<pin>::write(rgb_color * colors, unsigned int count)
+template<unsigned char pin> void __attribute__((aligned(16))) PololuLedStrip<pin>::write(RGBColor * colors, unsigned int count)
 {
 #if defined(__AVR__)
   digitalWrite(pin, LOW);

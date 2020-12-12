@@ -10,7 +10,7 @@
 
 PololuLedStrip<LED_PIN> ledStrip;
 
-rgb_color colors[LED_COUNT];
+RGBColor colors[LED_COUNT];
 
 byte state[LED_COUNT];
 

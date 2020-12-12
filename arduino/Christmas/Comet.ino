@@ -1,4 +1,3 @@
-#define COMET_DECREASE_SPEED 25
 
 unsigned int cometCounter = 0;
 
@@ -20,7 +19,7 @@ void updateComet(byte inverted) {
     // we decreate the intensity of the comet
     for (int led = 0; led < LED_COUNT; led++) {
       if (! state[led]) {
-        decreaseColor(led, COMET_DECREASE_SPEED);
+        decreaseColor(led);
       }
     }
   }

@@ -7,13 +7,13 @@ void updateTinsel() {
 
   for (uint16_t led = 0; led < LED_COUNT; led++) {
     if (state[led] == 0) {
-      colors[led] =  rgb_color(getIntensity(), 0, 0);
+      colors[led] =  RGBColor(getIntensity(), 0, 0);
     } else {
       state[led]--;
     }
   }
 
-  rgb_color color = getColor();
+  RGBColor color = getColor();
 
   for (byte width = 0; width < 3; width++) {
     byte line = 5;

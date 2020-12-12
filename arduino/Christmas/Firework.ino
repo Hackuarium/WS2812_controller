@@ -1,4 +1,4 @@
-#define FIREWORK_DECREASE_SPEED 25
+
 
 unsigned int fireworkCounter = 0;
 
@@ -27,7 +27,7 @@ void updateFirework() {
     // we decreate the intensity of the firework
     for (int led = 0; led < LED_COUNT; led++) {
       if (! state[led]) {
-        decreaseColor(led, FIREWORK_DECREASE_SPEED);
+        decreaseColor(led);
       }
     }
   }
@@ -38,7 +38,7 @@ void updateFirework() {
   int led = getLed(line, 0, false);
   Serial.println(led);
   state[led] = 1;
-  colors[led] = rgb_color(getIntensity(), getIntensity(), getIntensity());
+  colors[led] = RGBColor(getIntensity(), getIntensity(), getIntensity());
 }
 
 void firework() {
